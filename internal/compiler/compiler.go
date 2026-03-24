@@ -19,10 +19,9 @@ func New(templatesPath string, outputPath string) *Compiler {
 }
 
 func (c *Compiler) NewPage(meta map[string]any, content []byte) (*Page, error) {
-	data := meta
-	data["Content"] = template.HTML(content)
+	meta["Content"] = template.HTML(content)
 
-	return &Page{Data: data}, nil
+	return &Page{Data: meta}, nil
 }
 
 func (c *Compiler) CompilePage(page *Page, out io.Writer) error {
