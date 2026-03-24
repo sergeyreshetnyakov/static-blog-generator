@@ -16,6 +16,6 @@ func main() {
 
 	a := app.New(*templatesPath, *inputPath, *outputPath, false)
 	if err := a.Run(); err != nil {
-		log.Fatalf("%s", err.Error())
+		log.Fatalf("%v", err.Error())
 	}
 }

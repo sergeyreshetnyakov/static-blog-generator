@@ -3,23 +3,25 @@ package handler
 import (
 	"bytes"
 	"errors"
+
+	"github.com/sergeyreshetnyakov/static-blog-generator/internal/meta"
 )
 
-func HandlePageFile(file []byte, parseMarkdown func([]byte) ([]byte, error), parseMeta func([]byte) (map[string]any, error)) (meta map[string]any, content []byte, err error) {
+func HandlePageFile(file []byte, parseMarkdown func([]byte) ([]byte, error), parseMeta func([]byte) (meta.Meta, error)) (meta meta.Meta, content []byte, err error) {
 	parts := bytes.Split(file, []byte("---"))
 	if len(parts) == 1 {
-		return nil, nil, errors.New("Metadata is not found")
+		return meta, nil, errors.New("Metadata is not found")
 	} else if len(parts) > 2 {
-		return nil, nil, errors.New("Sign \"---\" is reserved separator. You must not use it")
+		return meta, nil, errors.New("Sign \"---\" is reserved separator. You must not use it")
 	}
 
 	meta, err = parseMeta(parts[0])
 	if err != nil {
-		return nil, nil, err
+		return meta, nil, err
 	}
 	content, err = parseMarkdown(parts[1])
 	if err != nil {
-		return nil, nil, err
+		return meta, nil, err
 	}
 
 	return meta, content, nil

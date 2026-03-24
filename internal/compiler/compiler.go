@@ -4,10 +4,13 @@ import (
 	"html/template"
 	"io"
 	"path/filepath"
+
+	"github.com/sergeyreshetnyakov/static-blog-generator/internal/meta"
 )
 
 type Page struct {
-	Data map[string]any
+	Meta    meta.Meta
+	Content template.HTML
 }
 
 type Compiler struct {
@@ -18,19 +21,24 @@ func New(templatesPath string, outputPath string) *Compiler {
 	return &Compiler{TemplatesPath: templatesPath}
 }
 
-func (c *Compiler) NewPage(meta map[string]any, content []byte) (*Page, error) {
-	meta["Content"] = template.HTML(content)
-
-	return &Page{Data: meta}, nil
+func (c *Compiler) NewPage(meta meta.Meta, content []byte) (*Page, error) {
+	return &Page{Meta: meta, Content: template.HTML(content)}, nil
 }
 
 func (c *Compiler) CompilePage(page *Page, out io.Writer) error {
-	tmpl, err := template.ParseFiles(filepath.Join(c.TemplatesPath, "page.html"))
+	tmpl, err := template.ParseFiles(filepath.Join(c.TemplatesPath, page.Meta.Template))
 	if err != nil {
 		return err
 	}
 
-	err = tmpl.Execute(out, page.Data)
+	pageMap := map[string]any{
+		"Title":    page.Meta.Title,
+		"Date":     page.Meta.Date,
+		"Template": page.Meta.Template,
+		"Style":    page.Meta.Style,
+		"Content":  page.Content,
+	}
+	err = tmpl.Execute(out, pageMap)
 
 	return err
 }

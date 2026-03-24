@@ -4,17 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Title}}</title>
+    <link rel="stylesheet" href="{{.Style}}">
 </head>
 <body>
-    {{if .IsIndex}}
-        <div></div>
-    {{else}}
-        <div>
-            <a href="javascript:history.back()">назад</a>
-            <span>{{.Date}}</span>
-        </div>
-    {{end}}
-    <div>
+    <header>
+        <a href="javascript:history.back()">назад</a>
+        <span>{{.Date}}</span>
+    </header>
+    <div class="content">
         {{.Content}}
     </div>
 </body>

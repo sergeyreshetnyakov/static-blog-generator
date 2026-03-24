@@ -42,6 +42,20 @@ func (a *App) processFiles(compiler *compiler.Compiler) error {
 			return fmt.Errorf("%v:%w", path, err)
 		}
 
+		if filepath.Ext(path) == ".css" {
+			file, err := os.ReadFile(path)
+			if err != nil {
+				return err
+			}
+			outDir := utils.ReplacePathRootDir(path, a.OutputPath)
+			if err := os.MkdirAll(outDir, 0755); err != nil {
+				return fmt.Errorf("%v:%w", path, err)
+			}
+			// fmt.Println(outDir)
+			if err := os.WriteFile(filepath.Join(outDir, info.Name()), file, 0755); err != nil {
+				return fmt.Errorf("%v:%w", path, err)
+			}
+		}
 		if filepath.Ext(path) != ".md" {
 			return nil
 		}

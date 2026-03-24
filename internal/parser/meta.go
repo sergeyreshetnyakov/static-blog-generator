@@ -1,27 +1,17 @@
 package parser
 
 import (
-	"html/template"
-
+	"github.com/sergeyreshetnyakov/static-blog-generator/internal/meta"
 	"gopkg.in/yaml.v2"
 )
 
-func ParseMeta(meta []byte) (map[string]any, error) {
-	var unmarshaledMeta struct {
-		Title    string `yaml:"title"`
-		Date     string `yaml:"date"`
-		Template string `yaml:"template"`
-		Content  template.HTML
-	}
+func ParseMeta(data []byte) (meta.Meta, error) {
+	var unmarshaledMeta meta.Meta
 
-	err := yaml.Unmarshal(meta, &unmarshaledMeta)
+	err := yaml.Unmarshal(data, &unmarshaledMeta)
 	if err != nil {
-		return nil, err
+		return meta.Meta{}, err
 	}
 
-	return map[string]any{
-		"Title":    unmarshaledMeta.Title,
-		"Date":     unmarshaledMeta.Date,
-		"Template": unmarshaledMeta.Template,
-	}, nil
+	return unmarshaledMeta, nil
 }
